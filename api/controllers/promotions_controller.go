@@ -33,18 +33,21 @@ func CreatePromotion(c *gin.Context, db *sql.DB) {
 	}
 
 	dbPromotion, parseErr := parseToDbEntity(&promotion)
+	var message string
 	if parseErr != nil {
-		c.JSON(http.StatusBadRequest, promotion)
+		message = "Error during parsing promotion to db entity."
+		c.JSON(http.StatusBadRequest, generateCreatePromotionResponse(0, message, promotion))
 		return
 	}
 
 	id, dbErr := persistance.AddPromotion(dbPromotion, db)
 	if dbErr != nil {
-		c.JSON(http.StatusBadRequest, promotion)
+		message = "Error during saving promotion to db."
+		c.JSON(http.StatusBadRequest, generateCreatePromotionResponse(0, message, promotion))
 		return
 	}
 
-	message := "Promotion Created Successfully!"
+	message = "Promotion Created Successfully!"
 	createPromotionResponse := generateCreatePromotionResponse(id, message, promotion)
 
 	c.JSON(http.StatusCreated, createPromotionResponse)

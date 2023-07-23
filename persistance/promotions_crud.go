@@ -32,9 +32,9 @@ func GetPromotionByPromotionID(promotion_id string, db *sql.DB) (db_entities.Pro
 	row := db.QueryRow("SELECT * FROM promotions WHERE promotion_id = ?", promotion_id)
 	if err := row.Scan(&pro.ID, &pro.PromotionId, &pro.Price, &pro.ExpirationDate); err != nil {
 		if err == sql.ErrNoRows {
-			return pro, fmt.Errorf("promotionsByPromotionId %d: no such promotion", promotion_id)
+			return pro, fmt.Errorf("Get promotion By PromotionId %v: no such promotion", promotion_id)
 		}
-		return pro, fmt.Errorf("promotionsByPromotionId %d: %v", promotion_id, err)
+		return pro, fmt.Errorf("Get promotion By PromotionId %d: %v", promotion_id, err)
 	}
 	return pro, nil
 }
@@ -46,11 +46,11 @@ func GetPromotionByPromotionID(promotion_id string, db *sql.DB) (db_entities.Pro
 func AddPromotion(pro db_entities.Promotion, db *sql.DB) (int64, error) {
 	result, err := db.Exec("INSERT INTO promotions (promotion_id, price, expiration_date) VALUES (?, ?, ?)", pro.PromotionId, pro.Price, pro.ExpirationDate)
 	if err != nil {
-		return 0, fmt.Errorf("addPromotion: %v", err)
+		return 0, fmt.Errorf("Add Promotion: %v", err)
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return 0, fmt.Errorf("addPromotion: %v", err)
+		return 0, fmt.Errorf("Add Promotion: %v", err)
 	}
 	return id, nil
 }
